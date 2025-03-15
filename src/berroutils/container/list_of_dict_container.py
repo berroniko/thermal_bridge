@@ -6,9 +6,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import List
 from zoneinfo import ZoneInfo
-from src.berroutils.plugins.file_handler import FileHandler
 
-# import pandas as pd
+import pandas as pd
+
+from src.berroutils.plugins.file_handler import FileHandler
 
 KeyCheck = namedtuple("KeyCheck", "valid missing_keys")
 
@@ -90,12 +91,6 @@ class ListOfDictContainer(metaclass=ABCMeta):
     def save(self) -> None:
         self.filehandler.save(data=self.data)
 
-    # def update_from_excel(self, path_to_excel: Path) -> None:
-    #     """update both the json file and instance of the class from an Excel sheet."""
-    #     df = pd.read_excel(path_to_excel)
-    #     raw_data = df.to_dict(orient='records')
-    #     self.update_from_upload(data=raw_data)
-
     def update_from_file(self, filepath: Path) -> None:
         """update both the storage file and instance of the classe from a file.
         Implemented file-types: json"""
@@ -104,6 +99,19 @@ class ListOfDictContainer(metaclass=ABCMeta):
                 with open(filepath) as f:
                     raw_data = json.load(f)
                 self.update_from_upload(data=raw_data)
+
+            case '.csv':
+                df = pd.read_csv(filepath,
+                                 header=0,  # use the first row as column names
+                                 encoding='utf-8')
+                raw_data = df.to_dict(orient='records')
+                self.update_from_upload(data=raw_data)
+
+            case '.xlsx' | '.xls':
+                df = pd.read_excel(filepath)
+                raw_data = df.to_dict(orient='records')
+                self.update_from_upload(data=raw_data)
+
             case _:
                 raise NotImplementedError
 

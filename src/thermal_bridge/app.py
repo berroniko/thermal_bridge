@@ -4,6 +4,8 @@ import pandas as pd
 import streamlit as st
 
 sys.path.append('/Users/nikolaikresse/PycharmProjects/thermal_bridge')
+
+
 # TODO solve the import when running from streamlit
 
 

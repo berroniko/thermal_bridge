@@ -1,8 +1,8 @@
 from src.berroutils.container.list_of_dict_container import ListOfDictContainer
+from src.utils import is_nan
 
 
 class Psi(ListOfDictContainer):
-
     required_keys: set[str] = {'Waermebruecke', 'Bezeichnung', 'Psi-Wert'}
     alternative_keys: dict[str] = {'Wärmebrücke': 'Waermebruecke'}
 
@@ -12,4 +12,5 @@ class Psi(ListOfDictContainer):
         return 'psi'
 
     def _clean_data(self, data):
-        return data
+        cleaned = [elem for elem in data if not is_nan(elem.get('Bezeichnung'))]
+        return cleaned

@@ -2,8 +2,7 @@ from pathlib import Path
 
 from src.berroutils.plugins.file_handler import JsonFileHandler
 from src.thermal_bridge.psi_data import Psi
-
-DATA_DIR = Path(__file__).parent.parent.parent / "data"
+from src import DATA_DIR
 
 
 def init_psi():

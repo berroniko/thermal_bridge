@@ -6,6 +6,9 @@ def streamlit_app(df):
     # Streamlit UI
     st.title("Wärmebrückendaten")
 
+    waermeb_filter = st.selectbox('Wärmebrückenfilter', ['alle']+ list(df['Waermebruecke'].unique()))
+    waermeb_zusatz_filter = st.selectbox('Zusatzinfofilter', ['alle']+ list(df['Zusatzinfo Waermebruecke'].unique()))
+
     # User input field
     search_query = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035").strip()
 

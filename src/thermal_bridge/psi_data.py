@@ -4,7 +4,8 @@ from src.utils import is_nan
 
 class Psi(ListOfDictContainer):
     required_keys: set[str] = {'Waermebruecke', 'Bezeichnung', 'Psi-Wert'}
-    alternative_keys: dict[str] = {'Wärmebrücke': 'Waermebruecke'}
+    alternative_keys: dict[str] = {'Wärmebrücke': 'Waermebruecke',
+                                   'Zusatzinfo W\u00e4rmebr\u00fccke': 'Zusatzinfo Waermebruecke',}
 
     # format: alternative_keys = {"alt_key": "unique_key"}
 

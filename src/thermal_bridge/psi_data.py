@@ -1,4 +1,4 @@
-from src.berroutils.container.list_of_dict_container import ListOfDictContainer
+from berroutils.container.list_of_dict_container import ListOfDictContainer
 from src.utils import is_nan
 
 

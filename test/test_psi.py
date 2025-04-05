@@ -1,4 +1,4 @@
-from src.berroutils.plugins.file_handler import JsonFileHandler
+from berroutils.plugins.file_handler import JsonFileHandler
 from src.thermal_bridge.psi_data import Psi
 from src import TEST_DATA_DIR
 

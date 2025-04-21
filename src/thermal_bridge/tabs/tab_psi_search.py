@@ -34,6 +34,7 @@ psi_search_layout = html.Div([
                     ['Waermebruecke', 'Zusatzinfo Waermebruecke', 'Bezeichnung', 'Psi-Wert', 'mit Referenzbauteil',
                      'ebz', 'W&P', 'VHAG', 'Datum', 'Nr.', 'BV', 'Name', 'Farbe'])],
                 filter_action="native",
+                sort_action="native",
                 page_action='none',
                 style_table={'height': '400px', 'overflowY': 'auto'},
                 # style_cell={'textAlign': 'left'},

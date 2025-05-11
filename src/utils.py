@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from prompt_toolkit import prompt
+
 
 def is_nan(value) -> bool:
     if isinstance(value, float):
@@ -13,10 +15,23 @@ def is_nan(value) -> bool:
         return False
 
 
+def input_with_default(message: str, default: str) -> str:
+    return prompt(message, default=default)
+
+
 def parse_date(date_str: str) -> datetime:
     for fmt in ('%d.%m.%Y', '%d/%m/%Y'):
         try:
             return datetime.strptime(date_str, fmt)
         except ValueError:
             continue
-    raise ValueError(f"Date format not supported: {date_str}")
+
+    user_input = input_with_default(message="please correct this to the format dd.mm.yyyy:",
+                                        default=date_str)
+    return parse_date(user_input)
+
+
+if __name__ == '__main__':
+    # result = input_with_default("please correct: ", default="hällo")
+    result = parse_date("34.12.2018")
+    print(result)

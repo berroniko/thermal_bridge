@@ -15,16 +15,17 @@ class Psi(ListOfDictContainer):
         return 'psi'
 
     def _clean_data(self, data):
-        cleaned = [elem for elem in data if not is_nan(elem.get('Bezeichnung'))]
         cleaned = []
         for elem in data:
             if is_nan(elem.get('Bezeichnung')):
                 continue
             new_elem = elem.copy()
-            datum = elem.get('Datum')
-            if is_nan(datum):
-                new_elem['Datum'] = None
-            else:
-                new_elem['Datum'] = parse_date(elem.get('Datum')).strftime("%Y-%m-%d")
+            # del new_elem["BV"]
+            if False:  # handling of date formats
+                datum = elem.get('Datum')
+                if is_nan(datum):
+                    new_elem['Datum'] = None
+                else:
+                    new_elem['Datum'] = parse_date(elem.get('Datum')).strftime("%Y-%m-%d")
             cleaned.append(new_elem)
         return cleaned

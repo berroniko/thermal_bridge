@@ -7,6 +7,7 @@ import streamlit as st
 def streamlit_app(df):
     # Streamlit UI
     st.title("Wärmebrückendaten")
+    # st.write(st.secrets.salt)
 
     waermeb_filter = st.selectbox('Wärmebrückenfilter', ['alle']+ list(df['Waermebruecke'].unique()))
     if waermeb_filter != "alle":

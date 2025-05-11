@@ -20,7 +20,7 @@ class Psi(ListOfDictContainer):
             if is_nan(elem.get('Bezeichnung')):
                 continue
             new_elem = elem.copy()
-            # del new_elem["BV"]
+            del new_elem["BV"]
             if False:  # handling of date formats
                 datum = elem.get('Datum')
                 if is_nan(datum):

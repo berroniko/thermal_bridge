@@ -1,5 +1,5 @@
 from src import DATA_DIR
-from berroutils.plugins.file_handler import JsonFileHandler, FileHandler
+from berroutils.plugins.file_handler import JsonFileHandler, FileHandler, CryptoJsonFileHandler
 from src.thermal_bridge.psi_data import Psi
 
 

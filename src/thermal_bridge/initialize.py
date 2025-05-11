@@ -6,6 +6,8 @@ from src import DATA_DIR
 
 
 def init_psi():
+    # filepath = DATA_DIR / "psi_data.json"
+    # filehandler = JsonFileHandler(file_path=filepath)
     filepath = DATA_DIR / "psi_data.json"
     filehandler = JsonFileHandler(file_path=filepath)
     return Psi(filehandler=filehandler)

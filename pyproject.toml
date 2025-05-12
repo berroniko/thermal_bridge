@@ -9,6 +9,6 @@ dependencies = [
     "streamlit>=1.44.0",
     "watchdog>=6.0.0",
     "pandas>=2.2.3",
-    "berroutils>=0.0.3",
+    "berroutils>=0.1.0",
     "prompt-toolkit>=3.0.51",
 ]

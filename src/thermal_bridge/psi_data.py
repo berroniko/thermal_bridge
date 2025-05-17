@@ -18,7 +18,7 @@ class Psi(ListOfDictContainer):
     def _clean_data(self, data):
         cleaned = []
         for elem in data:
-            if is_nan(elem.get('Bezeichnung')):
+            if is_nan(elem.get('Bezeichnung')) or is_nan(elem.get('Psi-Wert')):
                 continue
             new_elem = {k: None if is_nan(v) else v for k, v in elem.items()}
             del new_elem["BV"]

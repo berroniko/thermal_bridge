@@ -171,4 +171,9 @@ cython_debug/
 .pypirc
 
 .idea/
+
+# thermalbridge
 psi_data.json
+.data/*.csv
+data/*.csv
+/data/*.csv

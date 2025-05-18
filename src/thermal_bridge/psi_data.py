@@ -20,7 +20,7 @@ class Psi(ListOfDictContainer):
         for elem in data:
             if is_nan(elem.get('Bezeichnung')) or is_nan(elem.get('Psi-Wert')):
                 continue
-            new_elem = {k: None if is_nan(v) else v for k, v in elem.items()}
+            new_elem = {k: "-" if is_nan(v) else v for k, v in elem.items()}
             del new_elem["BV"]
             del new_elem["Unnamed: 13"]
             del new_elem["Unnamed: 14"]
@@ -38,11 +38,11 @@ class Psi(ListOfDictContainer):
     @staticmethod
     def _parse_bezeichnung(bezeichnung: str) -> dict:
         result = {
-            'staerke' : None,
-            'material': None,
-            'dichte'  : None,
-            'dicke'   : None,
-            'wlg'     : None
+            'staerke' : '-',
+            'material': '-',
+            'dichte'  : '-',
+            'dicke'   : '-',
+            'wlg'     : '-'
         }
 
         # Match staerke (e.g., AW44, AWEG44)

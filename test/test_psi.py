@@ -12,7 +12,7 @@ def test_update_from_csv(fp_psi_data):
     filepath_new_source = TEST_DATA_DIR / "test_thermal_bridge.csv"
     psi.update_from_file(filepath=filepath_new_source)
 
-    assert len(psi.data) == 14
+    assert len(psi.data) == 8
     assert psi.data[0] == {'Bezeichnung'             : 'AW44-P-15KS(2,0)-160mm035-BP16(19)-060mm035US+FS-035_ohne '
                                                        'Foamglas+ohne SD',
                            'Datum'                   : '20.07.2017',
@@ -59,7 +59,9 @@ def test_update_from_csv(fp_psi_data):
                           ('Porenbetondecke an Steildach',
                            {'staerke': None, 'material': None, 'dichte': None, 'dicke': None, 'wlg': None}),
                           ('240PPW4-140mm032_Dach-240mm032',
-                           {'staerke': None, 'material': None, 'dichte': 'PPW4', 'dicke': 140, 'wlg': '032'})])
+                           {'staerke': None, 'material': None, 'dichte': 'PPW4', 'dicke': 140, 'wlg': '032'}),
+                          ('AW44_Stb.-D18(14) bzw Stb14_100mm023-U0,22_F0,73',
+                           {'staerke': 'AW44', 'material': None, 'dichte': None, 'dicke': 100, 'wlg': '023'})])
 def test_parse_bezeichnung(bezeichnung, expected):
     assert Psi._parse_bezeichnung(bezeichnung) == expected
 

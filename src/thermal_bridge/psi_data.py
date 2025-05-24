@@ -41,8 +41,8 @@ class Psi(ListOfDictContainer):
             'staerke' : '-',
             'material': '-',
             'dichte'  : '-',
-            'dicke'   : '-',
-            'wlg'     : '-'
+            'dicke'   : None,
+            'wlg'     : None
         }
 
         # Match staerke (e.g., AW44, AWEG44)

@@ -9,50 +9,76 @@ def streamlit_app(df):
     # Streamlit UI
     st.title("Wärmebrückendaten")
 
-    waermeb_filter = st.selectbox('Wärmebrücken', ['alle'] + list(df['Waermebruecke'].unique()))
-    if waermeb_filter != "alle":
-        df_wbf = df.loc[df['Waermebruecke'] == waermeb_filter]
-    else:
-        df_wbf = df
-    waermeb_zusatz_filter = st.selectbox('Zusatzinfo',
-                                         ['alle'] + list(df_wbf['Zusatzinfo Waermebruecke'].unique()))
-    if waermeb_zusatz_filter != "alle":
-        df_wzf = df_wbf.loc[df_wbf['Zusatzinfo Waermebruecke'] == waermeb_zusatz_filter]
-    else:
-        df_wzf = df_wbf
+    list_of_filters = ['Waermebruecke', 'Zusatzinfo Waermebruecke', 'staerke', 'material', 'dichte', 'dicke', 'wlg']
 
-    staerke_filter = st.selectbox('Stärke', ['alle'] + list(df_wzf['staerke'].unique()))
-    if staerke_filter != "alle":
-        df_wsf = df_wzf.loc[df_wzf['staerke'] == staerke_filter]
-    else:
-        df_wsf = df_wzf
+    def reset_filter():
+        return {col: "All" for col in list_of_filters}
 
-    material_filter = st.selectbox('Material', ['alle'] + list(df_wsf['material'].unique()))
-    if material_filter != "alle":
-        df_wmf = df_wsf.loc[df_wsf['material'] == material_filter]
-    else:
-        df_wmf = df_wsf
+    # Initialize filter state
+    if "filters" not in st.session_state:
+        st.session_state.filters = reset_filter()
 
-    # User input field
-    search_query = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035").strip()
+    # Reset button
+    if st.button("🔄 Filter zurücksetzen"):
+        st.session_state.filters = reset_filter()
+        st.rerun()
 
-    # Function to filter the table based on user input
-    def filter_data(query, dataframe):
-        if not query:
-            return dataframe  # Show all data if query is empty
+    # --- Filter application logic ---
+    def apply_filters(dataframe, filters):
+        df_filtered = dataframe.copy()
+        for col, val in filters.items():
+            if val != "All":
+                df_filtered = df_filtered[df_filtered[col] == val]
+        return df_filtered
 
-        keywords = query.lower().split()  # Split input into keywords
-        return dataframe[
-            dataframe["Bezeichnung"].str.lower().apply(
-                lambda desc: all(keyword in desc for keyword in keywords)
-            )
-        ]
+    # --- Filter update logic ---
+    # Create a copy to track updated filters
+    updated_filters = st.session_state.filters.copy()
 
-    # Apply filtering
-    filtered_df = filter_data(search_query, df_wmf)
+    # Loop over columns and create selectboxes with dynamic options
+    for col in list_of_filters:
+        # Apply filters excluding the current column
+        temp_filters = {k: v for k, v in updated_filters.items() if k != col}
+        temp_df = apply_filters(df, temp_filters)
 
-    # Display the table
-    st.dataframe(filtered_df, use_container_width=False)
+        # Get available options for current column based on other filters
+        available_options = sorted(temp_df[col].dropna().unique())
+        dropdown_options = ["All"] + available_options
+
+        # Selectbox
+        previous_value = updated_filters[col]
+        selected_value = st.selectbox(f"{col.capitalize()}", dropdown_options, index=dropdown_options.index(
+            previous_value) if previous_value in dropdown_options else 0)
+
+        # If selection changed, update and rerun to refresh other filters
+        if selected_value != previous_value:
+            st.session_state.filters[col] = selected_value
+            st.rerun()
+
+    # Apply all filters and display
+    final_filtered_df = apply_filters(df, st.session_state.filters)
+    st.dataframe(final_filtered_df, use_container_width=True)
+
+    # # User input field
+    # search_query = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035").strip()
+    #
+    # # Function to filter the table based on user input
+    # def filter_data(query, dataframe):
+    #     if not query:
+    #         return dataframe  # Show all data if query is empty
+    #
+    #     keywords = query.lower().split()  # Split input into keywords
+    #     return dataframe[
+    #         dataframe["Bezeichnung"].str.lower().apply(
+    #             lambda desc: all(keyword in desc for keyword in keywords)
+    #         )
+    #     ]
+    #
+    # # Apply filtering
+    # filtered_df = filter_data(search_query, df_wmf)
+    #
+    # # Display the table
+    # st.dataframe(filtered_df, use_container_width=False)
 
 
 def authenticate():
@@ -80,6 +106,7 @@ def main():
 
     psi = init_psi()
     df = pd.DataFrame(psi.data)
+    df['dicke'] = pd.to_numeric(df['dicke'], errors='coerce').astype('Int64')
     streamlit_app(df=df)
 
 

@@ -22,8 +22,10 @@ class Psi(ListOfDictContainer):
                 continue
             new_elem = {k: "-" if is_nan(v) else v for k, v in elem.items()}
             del new_elem["BV"]
+            del new_elem["Name"]
             del new_elem["Unnamed: 13"]
             del new_elem["Unnamed: 14"]
+            new_elem["VHAG"] = 'X' if (elem.get('VHAG') in ['x', 'X']) else '-'
 
             new_elem = new_elem | self._parse_bezeichnung(elem.get("Bezeichnung", ""))
             if False:  # handling of date formats

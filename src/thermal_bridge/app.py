@@ -6,13 +6,14 @@ import streamlit as st
 #  streamlit run /Users/niko/Python/PycharmProjects/thermal_bridge/__main__.py
 
 def streamlit_app(df):
-    # Streamlit UI
+    st.set_page_config(layout="wide")
     st.title("Wärmebrückendaten")
 
-    list_of_filters = ['Waermebruecke', 'Zusatzinfo Waermebruecke', 'staerke', 'material', 'dichte', 'dicke', 'wlg']
+    list_of_filters = ['Waermebruecke', 'Zusatzinfo Waermebruecke', 'staerke', 'material', 'dichte', 'dicke', 'wlg',
+                       'VHAG']
 
     def reset_filter():
-        return {col: "All" for col in list_of_filters}
+        return {col: "alle" for col in list_of_filters}
 
     # Initialize filter state
     if "filters" not in st.session_state:
@@ -27,7 +28,7 @@ def streamlit_app(df):
     def apply_filters(dataframe, filters):
         df_filtered = dataframe.copy()
         for col, val in filters.items():
-            if val != "All":
+            if val != "alle":
                 df_filtered = df_filtered[df_filtered[col] == val]
         return df_filtered
 
@@ -43,7 +44,7 @@ def streamlit_app(df):
 
         # Get available options for current column based on other filters
         available_options = sorted(temp_df[col].dropna().unique())
-        dropdown_options = ["All"] + available_options
+        dropdown_options = ["alle"] + available_options
 
         # Selectbox
         previous_value = updated_filters[col]

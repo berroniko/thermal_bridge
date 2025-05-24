@@ -55,13 +55,28 @@ def streamlit_app(df):
     st.dataframe(filtered_df, use_container_width=False)
 
 
+def authenticate():
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+
+    if not st.session_state.authenticated:
+        st.title("🔐 Wärmebrückendaten")
+
+        password = st.text_input("Enter password to continue:", type="password")
+
+        if st.button("Submit"):
+            if password == st.secrets.password:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("Incorrect password")
+        st.stop()
+
+
 def main():
     from src.thermal_bridge.initialize import init_psi
-    password = st.text_input("Enter password to continue:", type="password")
 
-    if password != st.secrets.password:
-        st.warning("Please enter the correct password to access the app.")
-        st.stop()
+    authenticate()
 
     psi = init_psi()
     df = pd.DataFrame(psi.data)

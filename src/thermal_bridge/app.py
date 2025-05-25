@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+import streamlit.components.v1 as components
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 
 #  from one level above root:
@@ -92,14 +93,31 @@ def streamlit_app(df):
     grid_options = gb.build()
     grid_options["getRowStyle"] = row_style_code
 
-    # Show the table
-    AgGrid(
+    # Display the grid with single row selection
+    grid_response = AgGrid(
         final_filtered_df,
         gridOptions=grid_options,
-        fit_columns_on_grid_load=False,
-        allow_unsafe_jscode=True,  # Needed to enable JsCode
-        enableBrowserClipboard=True
+        update_mode=GridUpdateMode.SELECTION_CHANGED,
+        enableBrowserClipboard=True,
+        fit_columns_on_grid_load=True,
+        allow_unsafe_jscode=True  # Allow JsCode injection
     )
+
+    # Get selected row and copy a value
+    selected = grid_response["selected_rows"]
+
+    try:
+        value_to_copy = selected['Psi-Wert'].item()
+        # JS to copy the value
+        components.html(f"""
+            <script>
+                navigator.clipboard.writeText("{value_to_copy}");
+            </script>
+        """, height=0)
+
+        st.write(value_to_copy)
+    except TypeError:
+        pass
 
 
 def authenticate():

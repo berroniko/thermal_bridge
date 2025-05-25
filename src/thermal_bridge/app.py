@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 
 #  from one level above root:
@@ -9,11 +10,16 @@ def streamlit_app(df):
     st.set_page_config(layout="wide")
     st.title("Wärmebrückendaten")
 
-    list_of_filters = ['Waermebruecke', 'Zusatzinfo Waermebruecke', 'staerke', 'material', 'dichte', 'dicke', 'wlg',
-                       'VHAG']
+    list_of_filters = {'Waermebruecke'           : 'Wärmebrücke',
+                       'Zusatzinfo Waermebruecke': 'Zusatzinfo Wärmebrücke',
+                       'staerke'                 : 'Stärke',
+                       'material'                : 'Putz/Verblend',
+                       'PPW'                     : 'PPW',
+                       'dicke'                   : 'Dicke (mm)',
+                       'WLG'                     : 'WLG'}
 
     def reset_filter():
-        return {col: "alle" for col in list_of_filters}
+        return {col: "alle" for col in list_of_filters.keys()}
 
     # Initialize filter state
     if "filters" not in st.session_state:
@@ -37,7 +43,7 @@ def streamlit_app(df):
     updated_filters = st.session_state.filters.copy()
 
     # Loop over columns and create selectboxes with dynamic options
-    for col in list_of_filters:
+    for col in list_of_filters.keys():
         # Apply filters excluding the current column
         temp_filters = {k: v for k, v in updated_filters.items() if k != col}
         temp_df = apply_filters(df, temp_filters)
@@ -48,7 +54,7 @@ def streamlit_app(df):
 
         # Selectbox
         previous_value = updated_filters[col]
-        selected_value = st.selectbox(f"{col.capitalize()}", dropdown_options, index=dropdown_options.index(
+        selected_value = st.selectbox(f"{list_of_filters.get(col)}", dropdown_options, index=dropdown_options.index(
             previous_value) if previous_value in dropdown_options else 0)
 
         # If selection changed, update and rerun to refresh other filters
@@ -58,28 +64,42 @@ def streamlit_app(df):
 
     # Apply all filters and display
     final_filtered_df = apply_filters(df, st.session_state.filters)
-    st.dataframe(final_filtered_df, use_container_width=True)
 
-    # # User input field
-    # search_query = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035").strip()
-    #
-    # # Function to filter the table based on user input
-    # def filter_data(query, dataframe):
-    #     if not query:
-    #         return dataframe  # Show all data if query is empty
-    #
-    #     keywords = query.lower().split()  # Split input into keywords
-    #     return dataframe[
-    #         dataframe["Bezeichnung"].str.lower().apply(
-    #             lambda desc: all(keyword in desc for keyword in keywords)
-    #         )
-    #     ]
-    #
-    # # Apply filtering
-    # filtered_df = filter_data(search_query, df_wmf)
-    #
-    # # Display the table
-    # st.dataframe(filtered_df, use_container_width=False)
+    # JavaScript function for row styling
+    row_style_code = JsCode("""
+    function(params) {
+        if (params.data.row_color) {
+            return { backgroundColor: params.data.row_color };
+        }
+        return {};
+    }
+    """)
+
+    # GridOptions with custom row styling
+    gb = GridOptionsBuilder.from_dataframe(final_filtered_df)
+
+    gb.configure_column("row_color", hide=True)
+    gb.configure_column("Farbe", hide=True)
+    gb.configure_column("ebz", hide=True)
+    gb.configure_column("W&P", hide=True)
+    gb.configure_column("staerke", hide=True)
+    gb.configure_column("material", hide=True)
+    gb.configure_column("PPW", hide=True)
+    gb.configure_column("dicke", hide=True)
+    gb.configure_column("WLG", hide=True)
+
+    gb.configure_selection("single", use_checkbox=False)
+    grid_options = gb.build()
+    grid_options["getRowStyle"] = row_style_code
+
+    # Show the table
+    AgGrid(
+        final_filtered_df,
+        gridOptions=grid_options,
+        fit_columns_on_grid_load=False,
+        allow_unsafe_jscode=True,  # Needed to enable JsCode
+        enableBrowserClipboard=True
+    )
 
 
 def authenticate():

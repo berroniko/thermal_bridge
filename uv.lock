@@ -632,6 +632,15 @@ wheels = [
 ]
 
 [[package]]
+name = "python-decouple"
+version = "3.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/97/373dcd5844ec0ea5893e13c39a2c67e7537987ad8de3842fe078db4582fa/python-decouple-3.8.tar.gz", hash = "sha256:ba6e2657d4f376ecc46f77a3a615e058d93ba5e465c01bbe57289bfb7cce680f", size = 9612 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/d4/9193206c4563ec771faf2ccf54815ca7918529fe81f6adb22ee6d0e06622/python_decouple-3.8-py3-none-any.whl", hash = "sha256:d0d45340815b25f4de59c974b855bb38d03151d81b037d9e3f463b0c9f8cbd66", size = 9947 },
+]
+
+[[package]]
 name = "pytz"
 version = "2025.2"
 source = { registry = "https://pypi.org/simple" }
@@ -788,6 +797,20 @@ wheels = [
 ]
 
 [[package]]
+name = "streamlit-aggrid"
+version = "1.1.4.post1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pandas" },
+    { name = "python-decouple" },
+    { name = "streamlit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e9/5e/28d266fafdda1fcd76a07d384763aa3d4893a4b34951e6865b7dbbee8b2c/streamlit_aggrid-1.1.4.post1.tar.gz", hash = "sha256:5f32284701a0f180c11690f5e9100b049b58f20860aaea9d1dd1f7d2d5be8995", size = 4883271 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/cb/f58f2e278273389c84d370501e6c43c1ea77396b85dabcdf62a300558f81/streamlit_aggrid-1.1.4.post1-py3-none-any.whl", hash = "sha256:4d7d571fb30da6654f3037ada2ce79889feb89da114106f1e5eb30826adaceab", size = 4935068 },
+]
+
+[[package]]
 name = "tenacity"
 version = "9.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -806,6 +829,7 @@ dependencies = [
     { name = "prompt-toolkit" },
     { name = "pytest" },
     { name = "streamlit" },
+    { name = "streamlit-aggrid" },
     { name = "watchdog" },
 ]
 
@@ -816,6 +840,7 @@ requires-dist = [
     { name = "prompt-toolkit", specifier = ">=3.0.51" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "streamlit", specifier = ">=1.44.0" },
+    { name = "streamlit-aggrid", specifier = ">=1.1.4.post1" },
     { name = "watchdog", specifier = ">=6.0.0" },
 ]
 

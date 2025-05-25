@@ -6,7 +6,7 @@ from src.utils import is_nan, parse_date
 
 
 class Psi(ListOfDictContainer):
-    required_keys: set[str] = {'Waermebruecke', 'Bezeichnung', 'Psi-Wert', 'Datum'}
+    required_keys: set[str] = {'Waermebruecke', 'Bezeichnung', 'Psi-Wert', 'Datum', 'row_color'}
     alternative_keys: dict[str] = {'Wärmebrücke'                     : 'Waermebruecke',
                                    'Zusatzinfo W\u00e4rmebr\u00fccke': 'Zusatzinfo Waermebruecke', }
 
@@ -20,12 +20,15 @@ class Psi(ListOfDictContainer):
         for elem in data:
             if is_nan(elem.get('Bezeichnung')) or is_nan(elem.get('Psi-Wert')):
                 continue
+
             new_elem = {k: "-" if is_nan(v) else v for k, v in elem.items()}
+            # new_elem["VHAG"] = 'X' if (elem.get('VHAG') in ['x', 'X']) else '-'
+
             del new_elem["BV"]
             del new_elem["Name"]
-            del new_elem["Unnamed: 13"]
-            del new_elem["Unnamed: 14"]
-            new_elem["VHAG"] = 'X' if (elem.get('VHAG') in ['x', 'X']) else '-'
+            for colum_name in elem.keys():
+                if colum_name.startswith('Unnamed'):
+                    del new_elem[colum_name]
 
             new_elem = new_elem | self._parse_bezeichnung(elem.get("Bezeichnung", ""))
             if False:  # handling of date formats
@@ -42,9 +45,9 @@ class Psi(ListOfDictContainer):
         result = {
             'staerke' : '-',
             'material': '-',
-            'dichte'  : '-',
+            'PPW'     : '-',
             'dicke'   : None,
-            'wlg'     : None
+            'WLG'     : None
         }
 
         # Match staerke (e.g., AW44, AWEG44)
@@ -57,16 +60,16 @@ class Psi(ListOfDictContainer):
         if match_material:
             result['material'] = match_material.group(1)
 
-        # Match dichte (e.g., PPW2, PPW4)
-        match_dichte = re.search(r'(PPW\d)', bezeichnung)
-        if match_dichte:
-            result['dichte'] = match_dichte.group(1)
+        # Match PPW (e.g., PPW2, PPW4)
+        match_PPW = re.search(r'(PPW\d)', bezeichnung)
+        if match_PPW:
+            result['PPW'] = match_PPW.group(1)
 
-        # Match all thickness and wlg pairs like 160mm032
+        # Match all thickness and WLG pairs like 160mm032
         thickness_match = re.search(r'(\d{2,4})mm(\d{3})', bezeichnung)
         if thickness_match:
             # Take the first one as per test expectation
             result['dicke'] = int(thickness_match.group(1))
-            result['wlg'] = thickness_match.group(2)
+            result['WLG'] = thickness_match.group(2)
 
         return result

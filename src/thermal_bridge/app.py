@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+from numpy.ma.core import left_shift
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 
@@ -43,8 +44,12 @@ def streamlit_app(df):
     # Create a copy to track updated filters
     updated_filters = st.session_state.filters.copy()
 
+    left, right = st.columns([1, 1])
+
     # Loop over columns and create selectboxes with dynamic options
+    num = 0
     for col in list_of_filters.keys():
+        num+=1
         # Apply filters excluding the current column
         temp_filters = {k: v for k, v in updated_filters.items() if k != col}
         temp_df = apply_filters(df, temp_filters)
@@ -55,8 +60,12 @@ def streamlit_app(df):
 
         # Selectbox
         previous_value = updated_filters[col]
-        selected_value = st.selectbox(f"{list_of_filters.get(col)}", dropdown_options, index=dropdown_options.index(
-            previous_value) if previous_value in dropdown_options else 0)
+        if num % 2:
+            selected_value = left.selectbox(f"{list_of_filters.get(col)}", dropdown_options, index=dropdown_options.index(
+                previous_value) if previous_value in dropdown_options else 0)
+        else:
+            selected_value = right.selectbox(f"{list_of_filters.get(col)}", dropdown_options, index=dropdown_options.index(
+                previous_value) if previous_value in dropdown_options else 0)
 
         # If selection changed, update and rerun to refresh other filters
         if selected_value != previous_value:
@@ -116,6 +125,7 @@ def streamlit_app(df):
 
     try:
         value_to_copy = selected['Psi-Wert'].item()
+
         # JS to copy the value
         components.html(f"""
             <script>
@@ -124,6 +134,7 @@ def streamlit_app(df):
         """, height=0)
 
         st.write(value_to_copy)
+
     except TypeError:
         pass
 

@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
-from numpy.ma.core import left_shift
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 
@@ -49,7 +48,7 @@ def streamlit_app(df):
     # Loop over columns and create selectboxes with dynamic options
     num = 0
     for col in list_of_filters.keys():
-        num+=1
+        num += 1
         # Apply filters excluding the current column
         temp_filters = {k: v for k, v in updated_filters.items() if k != col}
         temp_df = apply_filters(df, temp_filters)
@@ -61,11 +60,13 @@ def streamlit_app(df):
         # Selectbox
         previous_value = updated_filters[col]
         if num % 2:
-            selected_value = left.selectbox(f"{list_of_filters.get(col)}", dropdown_options, index=dropdown_options.index(
-                previous_value) if previous_value in dropdown_options else 0)
+            selected_value = left.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
+                                            index=dropdown_options.index(
+                                                previous_value) if previous_value in dropdown_options else 0)
         else:
-            selected_value = right.selectbox(f"{list_of_filters.get(col)}", dropdown_options, index=dropdown_options.index(
-                previous_value) if previous_value in dropdown_options else 0)
+            selected_value = right.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
+                                             index=dropdown_options.index(
+                                                 previous_value) if previous_value in dropdown_options else 0)
 
         # If selection changed, update and rerun to refresh other filters
         if selected_value != previous_value:
@@ -87,6 +88,7 @@ def streamlit_app(df):
 
     # GridOptions with custom row styling
     gb = GridOptionsBuilder.from_dataframe(final_filtered_df)
+    gb.configure_grid_options(enableCellTextSelection=True, ensureDomOrder=True, )
 
     gb.configure_column("row_color", hide=True)
     gb.configure_column("Farbe", hide=True)
@@ -120,23 +122,6 @@ def streamlit_app(df):
         allow_unsafe_jscode=True  # Allow JsCode injection
     )
 
-    # Get selected row and copy a value
-    selected = grid_response["selected_rows"]
-
-    try:
-        value_to_copy = selected['Psi-Wert'].item()
-
-        # JS to copy the value
-        components.html(f"""
-            <script>
-                navigator.clipboard.writeText("{value_to_copy}");
-            </script>
-        """, height=0)
-
-        st.write(value_to_copy)
-
-    except TypeError:
-        pass
 
 
 def authenticate():

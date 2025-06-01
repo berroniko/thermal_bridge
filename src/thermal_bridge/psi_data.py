@@ -31,12 +31,12 @@ class Psi(ListOfDictContainer):
                     del new_elem[colum_name]
 
             new_elem = new_elem | self._parse_bezeichnung(elem.get("Bezeichnung", ""))
-            if False:  # handling of date formats
+            if True:  # handling of date formats
                 datum = elem.get('Datum')
                 if is_nan(datum):
                     new_elem['Datum'] = None
                 else:
-                    new_elem['Datum'] = parse_date(elem.get('Datum')).strftime("%Y-%m-%d")
+                    new_elem['Datum'] = parse_date(datum).strftime("%Y-%m-%d")
             cleaned.append(new_elem)
         return cleaned
 

@@ -10,10 +10,13 @@ from pydantic import BaseModel
 
 from src import SRC_ROOT
 
-with open(SRC_ROOT.parent.parent / Path("credentials.json")) as f:
-    credentials = json.load(f)
+working_locally = False
 
-os.environ['echo'] = credentials["openai_api_testing"]
+if working_locally:
+    with open(SRC_ROOT.parent.parent / Path("credentials.json")) as f:
+        credentials = json.load(f)
+
+    os.environ['echo'] = credentials["openai_api_testing"]
 
 
 def is_nan(value) -> bool:

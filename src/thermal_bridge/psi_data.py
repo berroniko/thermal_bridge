@@ -88,14 +88,19 @@ class Psi(ListOfDictContainer):
         }
 
         # Match staerke (e.g., AW44, AWEG44)
-        match_staerke = re.search(r'^([A-Z]+\d{2})', bezeichnung)
+        match_staerke = re.search(r'^([A-Z]+\d{2}(,\d)?)', bezeichnung)
         if match_staerke:
             result['staerke'] = match_staerke.group()
 
         # Match material (e.g. -P-, -V-)
-        match_material = re.search(r'-([A-Z])-', bezeichnung)
+        match_material = re.search(r'-([PV])-', bezeichnung)
         if match_material:
             result['material'] = match_material.group(1)
+
+        # Match material (e.g. -KS)
+        match_mat_ks = re.search(r'-KS', bezeichnung)
+        if match_mat_ks:
+            result['material'] = 'KS'
 
         # Match PPW (e.g., PPW2, PPW4)
         match_PPW = re.search(r'(PPW\d)', bezeichnung)

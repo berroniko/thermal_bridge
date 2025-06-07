@@ -60,7 +60,12 @@ def test_update_from_csv(fp_psi_data):
                           ('240PPW4-140mm032_Dach-240mm032',
                            {'staerke': '-', 'material': '-', 'PPW': 'PPW4', 'dicke': 140, 'WLG': '032'}),
                           ('AW44_Stb.-D18(14) bzw Stb14_100mm023-U0,22_F0,73',
-                           {'staerke': 'AW44', 'material': '-', 'PPW': '-', 'dicke': 100, 'WLG': '023'})])
+                           {'staerke': 'AW44', 'material': '-', 'PPW': '-', 'dicke': 100, 'WLG': '023'}),
+                          ('IW11,5-KS(2,0)-BP18(19)-100mm036US_Mörtelfuge',
+                           {'staerke': 'IW11,5', 'material': 'KS', 'PPW': '-', 'dicke': 100, 'WLG': '036'}),
+                          ('IW11,5-KS-11,5KS-30mm035-11,5KS-BP(19)-OHNE US',
+                           {'staerke': 'IW11,5', 'material': 'KS', 'PPW': '-', 'dicke': 30, 'WLG': '035'})
+                          ])
 def test_parse_bezeichnung(bezeichnung, expected):
     assert Psi._parse_bezeichnung(bezeichnung) == expected
 

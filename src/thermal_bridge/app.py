@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 
@@ -12,15 +11,19 @@ def streamlit_app(df):
     st.title("Wärmebrückendaten")
 
     list_of_filters = {'Waermebruecke'           : 'Wärmebrücke',
-                       'Zusatzinfo Waermebruecke': 'Zusatzinfo Wärmebrücke',
+                       'Zusatzinfo Waermebruecke': 'Zusatzinfo',
                        'staerke'                 : 'Stärke',
                        'material'                : 'Putz/Verblend',
                        'PPW'                     : 'PPW',
                        'dicke'                   : 'Dicke (mm)',
-                       'WLG'                     : 'WLG'}
+                       'WLG'                     : 'WLG',
+                       'Psi-Wert'                : 'Psi-Wert',
+                       'Bezeichnung'             : 'Bezeichnung'}
 
     def reset_filter():
-        return {col: "alle" for col in list_of_filters.keys()}
+        filter_settings = {col: "alle" for col in list_of_filters.keys()}
+        filter_settings['Bezeichnung'] = ""
+        return filter_settings
 
     # Initialize filter state
     if "filters" not in st.session_state:
@@ -29,15 +32,26 @@ def streamlit_app(df):
     # Reset button
     if st.button("🔄 Filter zurücksetzen"):
         st.session_state.filters = reset_filter()
+        st.session_state.search_bezeichnung = ""
         st.rerun()
 
     # --- Filter application logic ---
     def apply_filters(dataframe, filters):
         df_filtered = dataframe.copy()
         for col, val in filters.items():
+            if col == "Bezeichnung":
+                continue
             if val != "alle":
                 df_filtered = df_filtered[df_filtered[col] == val]
-        return df_filtered
+        if not filters.get('Bezeichnung', None):
+            return df_filtered  # Show all data if query is empty
+
+        keywords = filters.get('Bezeichnung').lower().split()  # Split input into keywords
+        return df_filtered[
+            df_filtered["Bezeichnung"].str.lower().apply(
+                lambda desc: all(keyword in desc for keyword in keywords)
+            )
+        ]
 
     # --- Filter update logic ---
     # Create a copy to track updated filters
@@ -49,31 +63,36 @@ def streamlit_app(df):
     num = 0
     for col in list_of_filters.keys():
         num += 1
-        # Apply filters excluding the current column
-        temp_filters = {k: v for k, v in updated_filters.items() if k != col}
-        temp_df = apply_filters(df, temp_filters)
+        if col != 'Bezeichnung':
+            # Apply filters excluding the current column
+            temp_filters = {k: v for k, v in updated_filters.items() if k != col}
+            temp_df = apply_filters(df, temp_filters)
 
-        # Get available options for current column based on other filters
-        available_options = sorted(temp_df[col].dropna().unique())
-        dropdown_options = ["alle"] + available_options
+            # Get available options for current column based on other filters
+            available_options = sorted(temp_df[col].dropna().unique())
+            dropdown_options = ["alle"] + available_options
 
-        # Selectbox
-        previous_value = updated_filters[col]
-        if num % 2:
-            selected_value = left.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
-                                            index=dropdown_options.index(
-                                                previous_value) if previous_value in dropdown_options else 0)
+            # Selectbox
+            previous_value = updated_filters[col]
+            if num % 2:
+                selected_value = left.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
+                                                index=dropdown_options.index(
+                                                    previous_value) if previous_value in dropdown_options else 0)
+            else:
+                selected_value = right.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
+                                                 index=dropdown_options.index(
+                                                     previous_value) if previous_value in dropdown_options else 0)
         else:
-            selected_value = right.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
-                                             index=dropdown_options.index(
-                                                 previous_value) if previous_value in dropdown_options else 0)
+            previous_value = updated_filters[col]
+            selected_value = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035",
+                                           key="search_bezeichnung").strip()
 
         # If selection changed, update and rerun to refresh other filters
         if selected_value != previous_value:
             st.session_state.filters[col] = selected_value
             st.rerun()
 
-    # Apply all filters and display
+    # Apply all filters
     final_filtered_df = apply_filters(df, st.session_state.filters)
 
     # JavaScript function for row styling
@@ -121,7 +140,6 @@ def streamlit_app(df):
         fit_columns_on_grid_load=True,
         allow_unsafe_jscode=True  # Allow JsCode injection
     )
-
 
 
 def authenticate():

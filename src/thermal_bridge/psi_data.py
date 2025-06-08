@@ -35,11 +35,11 @@ class Psi(ListOfDictContainer):
             for elem in unique_data:
                 if not elem.get('Bezeichnung'):
                     continue
-                if elem.get('text_size') == 12 and elem.get('text_color') == '#000000':
+                if elem.get('text_size') == '12' and elem.get('text_color') == '#000000':
                     waermebruecke = elem.get('Bezeichnung')
                     zusatzinfo = '-'
                     continue
-                if elem.get('text_size') == 10 and elem.get('text_color') == '#ff0000':
+                if elem.get('text_size') == '10' and elem.get('text_color') == '#ff0000':
                     zusatzinfo = elem.get('Bezeichnung')
                     continue
 

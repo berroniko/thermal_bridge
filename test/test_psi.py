@@ -31,6 +31,31 @@ def test_update_from_csv(fp_psi_data):
                            'mit Referenzbauteil'     : '-',
                            'staerke'                 : 'AW44'}
 
+def test_update_from_origin_csv(fp_psi_data):
+    filehandler = JsonFileHandler(file_path=fp_psi_data)
+    psi = Psi(filehandler=filehandler)
+    filepath_new_source = TEST_DATA_DIR / "test_thermal_bridge.csv"
+    psi.update_from_file(filepath=filepath_new_source)
+
+    assert len(psi.data) == 8
+    assert psi.data[0] == {'Bezeichnung'             : 'AW44-P-15KS(2,0)-160mm035-BP16(19)-060mm035US+FS-035_ohne '
+                                                       'Foamglas+ohne SD',
+                           'Datum'                   : '20.07.2017',
+                           'Farbe'                   : 'light cyan',
+                           'Nr.'                     : 1294.0,
+                           'PPW'                     : '-',
+                           'Psi-Wert'                : 0.2501,
+                           'VHAG'                    : 'X',
+                           'W&P'                     : '-',
+                           'WLG'                     : '035',
+                           'Waermebruecke'           : 'Außenwand auf Bodenplatte (EG)',
+                           'Zusatzinfo Waermebruecke': 'Erhöhte Terrasse (140mm028)',
+                           'dicke'                   : 160,
+                           'ebz'                     : '-',
+                           'material'                : 'P',
+                           'mit Referenzbauteil'     : '-',
+                           'staerke'                 : 'AW44'}
+
 
 @pytest.mark.parametrize('bezeichnung, expected',
                          [('AW44-P-15KS(2,0)-160mm035-BP16(19)-060mm035US+FS-035_ohne Foamglas+ohne SD',

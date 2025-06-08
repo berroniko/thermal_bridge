@@ -31,30 +31,20 @@ def test_update_from_csv(fp_psi_data):
                            'mit Referenzbauteil'     : '-',
                            'staerke'                 : 'AW44'}
 
+
 def test_update_from_origin_csv(fp_psi_data):
     filehandler = JsonFileHandler(file_path=fp_psi_data)
     psi = Psi(filehandler=filehandler)
-    filepath_new_source = TEST_DATA_DIR / "test_thermal_bridge.csv"
+    filepath_new_source = TEST_DATA_DIR / "test_origin.csv"
     psi.update_from_file(filepath=filepath_new_source)
 
-    assert len(psi.data) == 8
-    assert psi.data[0] == {'Bezeichnung'             : 'AW44-P-15KS(2,0)-160mm035-BP16(19)-060mm035US+FS-035_ohne '
-                                                       'Foamglas+ohne SD',
-                           'Datum'                   : '20.07.2017',
-                           'Farbe'                   : 'light cyan',
-                           'Nr.'                     : 1294.0,
-                           'PPW'                     : '-',
-                           'Psi-Wert'                : 0.2501,
-                           'VHAG'                    : 'X',
-                           'W&P'                     : '-',
-                           'WLG'                     : '035',
-                           'Waermebruecke'           : 'Außenwand auf Bodenplatte (EG)',
-                           'Zusatzinfo Waermebruecke': 'Erhöhte Terrasse (140mm028)',
-                           'dicke'                   : 160,
-                           'ebz'                     : '-',
-                           'material'                : 'P',
-                           'mit Referenzbauteil'     : '-',
-                           'staerke'                 : 'AW44'}
+    assert len(psi.data) == 39
+    assert psi.get_entries(key="Psi-Wert", value=0.0238) == [
+        {'Bezeichnung'             : 'AW52,5-P-15PPW4-160mm035_17,5PPW2_BP18-19-60mm035US + Frostschürze_ohne SD_Pflasterung_Tür1,0',
+         'Psi-Wert'                : 0.0238, 'mit Referenzbauteil': '-', 'ebz': '-', 'WP': '-', 'VHAG': 'X',
+         'Datum'                   : '2019-01-24', 'Nr.': 1680.0, 'row_color': '#ffffff', 'text_size': 10,
+         'text_color'              : '#000000', 'Waermebruecke': '-', 'Zusatzinfo Waermebruecke': '-',
+         'staerke'                 : 'AW52,5', 'material': 'P', 'PPW': 'PPW4', 'dicke': 160, 'WLG': '035'}]
 
 
 @pytest.mark.parametrize('bezeichnung, expected',

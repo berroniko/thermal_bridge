@@ -6,6 +6,7 @@ from src.thermal_bridge.psi_data import Psi
 
 
 def main():
+    # get from streamlit.secrets
     key = 'missing'
 
     filepath = DATA_DIR / "psi_data.enc"
@@ -16,7 +17,7 @@ def main():
     # filepath_new_source = DATA_DIR / "thermal_bridge_44er.csv"
     filepath_new_source = DATA_DIR / "Stand 06Juni25 adapted - 44er Wand.csv"
     psi.update_from_file(filepath=filepath_new_source)
-    print("{len(psi.data)} entries")
+    print(f"{len(psi.data)} entries")
 
 def new_main():
     filepath = DATA_DIR / "psi_data_from_scratch.json"
@@ -26,7 +27,7 @@ def new_main():
     # filepath_new_source = DATA_DIR / "thermal_bridge_44er.csv"
     filepath_new_source = DATA_DIR / "Stand 06Juni25 adapted - 44er Wand.csv"
     psi.update_from_file(filepath=filepath_new_source)
-    print("{len(psi.data)} entries")
+    print(f"{len(psi.data)} entries")
 
 if __name__ == '__main__':
     main()

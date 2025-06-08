@@ -17,10 +17,13 @@ def streamlit_app(df):
                        'PPW'                     : 'PPW',
                        'dicke'                   : 'Dicke (mm)',
                        'WLG'                     : 'WLG',
-                       'Psi-Wert'                : 'Psi-Wert'}
+                       'Psi-Wert'                : 'Psi-Wert',
+                       'Bezeichnung'             : 'Bezeichnung'}
 
     def reset_filter():
-        return {col: "alle" for col in list_of_filters.keys()}
+        filter_settings = {col: "alle" for col in list_of_filters.keys()}
+        filter_settings['Bezeichnung'] = ""
+        return filter_settings
 
     # Initialize filter state
     if "filters" not in st.session_state:
@@ -29,15 +32,26 @@ def streamlit_app(df):
     # Reset button
     if st.button("🔄 Filter zurücksetzen"):
         st.session_state.filters = reset_filter()
+        st.session_state.search_bezeichnung = ""
         st.rerun()
 
     # --- Filter application logic ---
     def apply_filters(dataframe, filters):
         df_filtered = dataframe.copy()
         for col, val in filters.items():
+            if col == "Bezeichnung":
+                continue
             if val != "alle":
                 df_filtered = df_filtered[df_filtered[col] == val]
-        return df_filtered
+        if not filters.get('Bezeichnung', None):
+            return df_filtered  # Show all data if query is empty
+
+        keywords = filters.get('Bezeichnung').lower().split()  # Split input into keywords
+        return df_filtered[
+            df_filtered["Bezeichnung"].str.lower().apply(
+                lambda desc: all(keyword in desc for keyword in keywords)
+            )
+        ]
 
     # --- Filter update logic ---
     # Create a copy to track updated filters
@@ -49,24 +63,29 @@ def streamlit_app(df):
     num = 0
     for col in list_of_filters.keys():
         num += 1
-        # Apply filters excluding the current column
-        temp_filters = {k: v for k, v in updated_filters.items() if k != col}
-        temp_df = apply_filters(df, temp_filters)
+        if col != 'Bezeichnung':
+            # Apply filters excluding the current column
+            temp_filters = {k: v for k, v in updated_filters.items() if k != col}
+            temp_df = apply_filters(df, temp_filters)
 
-        # Get available options for current column based on other filters
-        available_options = sorted(temp_df[col].dropna().unique())
-        dropdown_options = ["alle"] + available_options
+            # Get available options for current column based on other filters
+            available_options = sorted(temp_df[col].dropna().unique())
+            dropdown_options = ["alle"] + available_options
 
-        # Selectbox
-        previous_value = updated_filters[col]
-        if num % 2:
-            selected_value = left.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
-                                            index=dropdown_options.index(
-                                                previous_value) if previous_value in dropdown_options else 0)
+            # Selectbox
+            previous_value = updated_filters[col]
+            if num % 2:
+                selected_value = left.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
+                                                index=dropdown_options.index(
+                                                    previous_value) if previous_value in dropdown_options else 0)
+            else:
+                selected_value = right.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
+                                                 index=dropdown_options.index(
+                                                     previous_value) if previous_value in dropdown_options else 0)
         else:
-            selected_value = right.selectbox(f"{list_of_filters.get(col)}", dropdown_options,
-                                             index=dropdown_options.index(
-                                                 previous_value) if previous_value in dropdown_options else 0)
+            previous_value = updated_filters[col]
+            selected_value = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035",
+                                           key="search_bezeichnung").strip()
 
         # If selection changed, update and rerun to refresh other filters
         if selected_value != previous_value:
@@ -74,25 +93,7 @@ def streamlit_app(df):
             st.rerun()
 
     # Apply all filters
-    pre_filtered_df = apply_filters(df, st.session_state.filters)
-
-    # Mastersearch
-    search_query = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035").strip()
-    st.write(search_query)
-
-    # Function to search & filter the table based on search_query
-    def filter_data(query, dataframe):
-        if not query:
-            return dataframe  # Show all data if query is empty
-
-        keywords = query.lower().split()  # Split input into keywords
-        return dataframe[
-            dataframe["Bezeichnung"].str.lower().apply(
-                lambda desc: all(keyword in desc for keyword in keywords)
-            )
-        ]
-
-    final_filtered_df = filter_data(search_query, pre_filtered_df)
+    final_filtered_df = apply_filters(df, st.session_state.filters)
 
     # JavaScript function for row styling
     row_style_code = JsCode("""

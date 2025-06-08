@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 
@@ -12,12 +11,13 @@ def streamlit_app(df):
     st.title("Wärmebrückendaten")
 
     list_of_filters = {'Waermebruecke'           : 'Wärmebrücke',
-                       'Zusatzinfo Waermebruecke': 'Zusatzinfo Wärmebrücke',
+                       'Zusatzinfo Waermebruecke': 'Zusatzinfo',
                        'staerke'                 : 'Stärke',
                        'material'                : 'Putz/Verblend',
                        'PPW'                     : 'PPW',
                        'dicke'                   : 'Dicke (mm)',
-                       'WLG'                     : 'WLG'}
+                       'WLG'                     : 'WLG',
+                       'Psi-Wert'                : 'Psi-Wert'}
 
     def reset_filter():
         return {col: "alle" for col in list_of_filters.keys()}
@@ -73,8 +73,26 @@ def streamlit_app(df):
             st.session_state.filters[col] = selected_value
             st.rerun()
 
-    # Apply all filters and display
-    final_filtered_df = apply_filters(df, st.session_state.filters)
+    # Apply all filters
+    pre_filtered_df = apply_filters(df, st.session_state.filters)
+
+    # Mastersearch
+    search_query = st.text_input("Bezeichnung filtern:", placeholder="z.B.: aw44 035").strip()
+    st.write(search_query)
+
+    # Function to search & filter the table based on search_query
+    def filter_data(query, dataframe):
+        if not query:
+            return dataframe  # Show all data if query is empty
+
+        keywords = query.lower().split()  # Split input into keywords
+        return dataframe[
+            dataframe["Bezeichnung"].str.lower().apply(
+                lambda desc: all(keyword in desc for keyword in keywords)
+            )
+        ]
+
+    final_filtered_df = filter_data(search_query, pre_filtered_df)
 
     # JavaScript function for row styling
     row_style_code = JsCode("""
@@ -121,7 +139,6 @@ def streamlit_app(df):
         fit_columns_on_grid_load=True,
         allow_unsafe_jscode=True  # Allow JsCode injection
     )
-
 
 
 def authenticate():

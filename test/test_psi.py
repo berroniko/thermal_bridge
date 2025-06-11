@@ -15,7 +15,7 @@ def test_update_from_csv(fp_psi_data):
     assert len(psi.data) == 8
     assert psi.data[0] == {'Bezeichnung'             : 'AW44-P-15KS(2,0)-160mm035-BP16(19)-060mm035US+FS-035_ohne '
                                                        'Foamglas+ohne SD',
-                           'Datum'                   : '20.07.2017',
+                           'Datum'                   : '2017-07-20',
                            'Farbe'                   : 'light cyan',
                            'Nr.'                     : 1294.0,
                            'PPW'                     : '-',
@@ -40,11 +40,26 @@ def test_update_from_origin_csv(fp_psi_data):
 
     assert len(psi.data) == 39
     assert psi.get_entries(key="Psi-Wert", value=0.0238) == [
-        {'Bezeichnung'             : 'AW52,5-P-15PPW4-160mm035_17,5PPW2_BP18-19-60mm035US + Frostschürze_ohne SD_Pflasterung_Tür1,0',
-         'Psi-Wert'                : 0.0238, 'mit Referenzbauteil': '-', 'ebz': '-', 'WP': '-', 'VHAG': 'X',
-         'Datum'                   : '2019-01-24', 'Nr.': 1680.0, 'row_color': '#ffffff', 'text_size': 10,
-         'text_color'              : '#000000', 'Waermebruecke': '-', 'Zusatzinfo Waermebruecke': '-',
-         'staerke'                 : 'AW52,5', 'material': 'P', 'PPW': 'PPW4', 'dicke': 160, 'WLG': '035'}]
+        {'Bezeichnung'             : 'AW52,5-P-15PPW4-160mm035_17,5PPW2_BP18-19-60mm035US + '
+                                     'Frostschürze_ohne SD_Pflasterung_Tür1,0',
+         'Datum'                   : '2019-01-24',
+         'Nr.'                     : 1680.0,
+         'PPW'                     : 'PPW4',
+         'Psi-Wert'                : 0.0238,
+         'VHAG'                    : 'X',
+         'WLG'                     : '035',
+         'WP'                      : '-',
+         'Waermebruecke'           : 'Garagenwand (52,5) 15PPW2 + 17,5PPW4)',
+         'Zusatzinfo Waermebruecke': 'Fußpunkt FH-Tür/Haustür (Zuschlag lt. GEG '
+                                     '+0,08) - EG',
+         'dicke'                   : 160,
+         'ebz'                     : '-',
+         'material'                : 'P',
+         'mit Referenzbauteil'     : '-',
+         'row_color'               : '#ffffff',
+         'staerke'                 : 'AW52,5',
+         'text_color'              : '#000000',
+         'text_size'               : 10}]
 
 
 @pytest.mark.parametrize('bezeichnung, expected',

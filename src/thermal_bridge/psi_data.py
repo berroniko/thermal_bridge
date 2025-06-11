@@ -24,7 +24,7 @@ class Psi(ListOfDictContainer):
         'Zusatzinfo Waermebruecke' results from text_size == 10 and text_color==#ff0000"""
 
         unique_data = self._unique_keys(data=data)
-        if 'Waermebruecke' in data[0].keys():
+        if 'Waermebruecke' in unique_data[0].keys():
             # if the file has already the column 'Waermebruecke' (and 'Zusatzinfo Waermebruecke')
             self.data = self._clean_data(unique_data)
         else:

@@ -10,6 +10,7 @@ def streamlit_app(df):
     st.set_page_config(layout="wide")
     st.title("Wärmebrückendaten")
 
+
     list_of_filters = {'Waermebruecke'           : 'Wärmebrücke',
                        'Zusatzinfo Waermebruecke': 'Zusatzinfo',
                        'staerke'                 : 'Stärke',
@@ -105,6 +106,7 @@ def streamlit_app(df):
     }
     """)
 
+
     # GridOptions with custom row styling
     gb = GridOptionsBuilder.from_dataframe(final_filtered_df)
     gb.configure_grid_options(enableCellTextSelection=True, ensureDomOrder=True, )
@@ -144,6 +146,14 @@ def streamlit_app(df):
         fit_columns_on_grid_load=True,
         allow_unsafe_jscode=True  # Allow JsCode injection
     )
+
+    # Get selected row and copy a value
+    selected = grid_response["selected_rows"]
+    try:
+        value_to_copy = selected['Bezeichnung'].item()
+        st.write(value_to_copy)
+    except TypeError:
+        st.write("")
 
 
 def authenticate():

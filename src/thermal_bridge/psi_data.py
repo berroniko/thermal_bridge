@@ -69,6 +69,7 @@ class Psi(ListOfDictContainer):
 
             del new_elem["BV"]
             del new_elem["Name"]
+            new_elem['Psi-Wert'] = float(elem.get('Psi-Wert'))
             for colum_name in elem.keys():
                 if colum_name.startswith('Unnamed'):
                     del new_elem[colum_name]

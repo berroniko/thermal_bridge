@@ -38,7 +38,7 @@ def test_update_from_origin_csv(fp_psi_data):
     filepath_new_source = TEST_DATA_DIR / "test_origin.csv"
     psi.update_from_file(filepath=filepath_new_source)
 
-    assert len(psi.data) == 39
+    assert len(psi.data) == 57
     assert psi.get_entries(key="Psi-Wert", value=0.0238) == [
         {'Bezeichnung'             : 'AW52,5-P-15PPW4-160mm035_17,5PPW2_BP18-19-60mm035US + '
                                      'Frostschürze_ohne SD_Pflasterung_Tür1,0',
@@ -60,6 +60,9 @@ def test_update_from_origin_csv(fp_psi_data):
          'staerke'                 : 'AW52,5',
          'text_color'              : '#000000',
          'text_size'               : 10}]
+
+    assert psi.get_entries(key="Psi-Wert", value=0.0269)[0][
+               'Zusatzinfo Waermebruecke'] == "Sturz Dachgeschoss - ohne Rollladen"
 
 
 @pytest.mark.parametrize('bezeichnung, expected',

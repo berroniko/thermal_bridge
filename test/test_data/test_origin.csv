@@ -59,3 +59,35 @@ Außenwand EG an FP-Fenstertür mit Rollladen,,,,,,,,,,#ffffff,10,#ff0000
 "Fußpunkt FH-Tür/Haustür (Zuschlag lt. GEG +0,08) - EG",,,,,,,,,,#ffffff,10,#ff0000
 "AW52,5-P-15PPW4-160mm035_17,5PPW2_BP18-19-60mm035US + Frostschürze_ohne SD_Pflasterung_Tür1,0",0.0238,,,,X,24.01.2019,1680,2019005,Nagel,#ffffff,10,#000000
 ,,,,,,,,,,#ffffff,10,#000000
+"AW46,5-V-17,5PPW2-160mm032_F0,78_Stb-D22(14)_Paneel1,0_F0,73_HST-EG_vorgesetzt",-0.1090,,,,X,07.11.2017,1340,85494,Dick,#ffffff,10,#000000
+Sturz Dachgeschoss,,,,,,,,,,#ffffff,11,#ff0000
+ohne Rollladen,,,,,,,,,,#ffffff,10,#ff0000
+"F-0,73_Drempel-240mm035","0,.0209",,,,X,23.11.2017,1385,,,#ffffff,10,#000000
+"F-0,73_Drempel-240mm035_Dach240mm035","0,.0269",,,,X,19.09.2018,1587,,,#ffffff,10,#000000
+"F-0,83_Drempel-280mm032_Dach-280mm032",0.0370,,,,X,26.05.2016,728,84619,Steinmeyer,#ffffff,10,#000000
+mit Rollladen,,,,,,,,,,#ffffff,10,#ff0000
+"AW44-V-15PPW2-160mm035_F0,73_Paneel0,77_KBL-280mm032_Stahlbetonbalken",0.2070,,,,X,23.05.2017,1213,2017027,Hartbart,#ffffff,10,#000000
+"AW44-V-15PPW2-160mm032_F0,73_Paneel0,77",0.1957,,,,X,31.05.2017,1221,2017027,Hartbart,#ffffff,10,#000000
+mit Raffstore,,,,,,,,,,#ffffff,10,#ff0000
+"AW46,5-V-17,5PPW2-160mm032_F0,73_Paneel1,0_Fensterband im Bereich Luftraum",0.0239,,,,X,07.11.2017,1340,85494,Dick,#ffffff,10,#000000
+Fußpunkt Fenstertür,,,,,,,,,,#ffffff,11,#ff0000
+Sturz Haustür an Fußpunkt Fenstertür mit Rolladen,,,,,,,,,,#ffffff,10,#ff0000
+"AW44-V-15PPW2-160mm032_Tür1,0_Stb-D24(14)_Paneel0,77_F-0,69_Treppenöffnung",0.0115,,,,X,22.02.2021,2120,,,#ffffff,10,#000000
+"AW44-V-15PPW2-160mm035_Tür1,1_Stb-D24(14)_Paneel1,1_F-0,73",-0.0044,,,,X,12.02.1019,1701,86182,Faby,#ffffff,10,#000000
+Sturz EG mit Rollladen an Fußpunkt Fenstertür mit Rolladen,,,,,,,,,,#ffffff,10,#ff0000
+"AW44-P-15PPW2-160mm032_Stb-D24(14)_Paneel0,77_REF",0.2463,X,,,X,06.04.2022,2416,,,#ffffff,10,#000000
+"AW44-P-15PPW2-160mm032_Stb-D24(14)_Paneel0,77_13cm Geschosserhöhung_REF",0.2236,X,,,X,15.12.2022,2519,,,#ffffff,10,#000000
+"AW44-V-15PPW2-160mm035_Stb-D24(14)_Paneel0,77_REF",0.2368,X,,,X,29.01.2025,2768,,,#ffffff,10,#000000
+Sturz EG ohne Rollladen an Fußpunkt Fenstertür mit Rolladen,,,,,,,,,,#ffffff,10,#ff0000
+"AW44V-15PPW2-160mm032_F0,73_Stb-D20(14)_Paneel0,77",0.0072,,,,X,30.05.2017,1220,84866,Wiederhold,#ffffff,10,#000000
+Sturz EG mit Rollladen an Fußpunkt Fenstertür ohne Rolladen,,,,,,,,,,#ffffff,10,#ff0000
+"AW44-V-15PPW2-160mm032_F0,77_Stb-D20(14)_Paneel1,0_13cm Geschosserhöhung",0.2114,,,,X,21.11.2016,958,84987,Winkler,#fff2cc,10,#000000
+"AW44-V-15PPW2-160mm035_F0,73_Stb-D18(14)_Paneel0,77",0.2557,,,,X,06.07.2017,1277,,,#ffffff,10,#000000
+,,,,,,,,,,#ffffff,10,#000000
+Sturz EG mit Raffstore an Fußpunkt Fenstertür mit Rolladen,,,,,,,,,,#ffffff,10,#ff0000
+"AW44-V-15PPW6-160mm035_F-0,78_Stb-D24(14)_Paneel0,77_F-0,73_13cm Geschosserhöhung_HST-EG",0.0949,,,,X,25.03.2020,1959,,,#ffffff,10,#000000
+,,,,,,,,,,#ffffff,10,#000000
+Abseitenwand/Fachwerkwand,,,,,,,,,,#ffffff,12,#000000
+an Steildach,,,,,,,,,,#ffffff,10,#ff0000
+Dach-200mm035_IW-200mm035,-0.1395,,,,X,14.10.2016,978,83758,Mathes,#ffffff,10,#000000
+Dach-240mm032_IW-240mm032,-0.0847,,,,X,25.05.2016,726,,,#fff2cc,10,#000000

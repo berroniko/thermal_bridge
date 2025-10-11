@@ -21,7 +21,8 @@ class Psi(ListOfDictContainer):
         If it is the original file format, the columns columns 'Waermebruecke' and 'Zusatzinfo Waermebruecke'
         will be generated based on the formatting in the original file
         'Waermebruecke' results from text_size == 12 and text_color==#000000
-        'Zusatzinfo Waermebruecke' results from text_size == 10 and text_color==#ff0000"""
+        'Zusatzinfo Waermebruecke' results from text_size == 10 and text_color==#ff0000
+        normal fields have also text_size == 10 but other text_colors"""
 
         unique_data = self._unique_keys(data=data)
         if 'Waermebruecke' in unique_data[0].keys():
@@ -31,21 +32,26 @@ class Psi(ListOfDictContainer):
             # otherwise it is the original format and the columns are created
             data_extended: list[dict] = []
             waermebruecke: str = '-'
-            zusatzinfo: str = '-'
+            zusatzinfo_first: str = ''
+            zusatzinfo_second: str = '-'
             for elem in unique_data:
                 if not elem.get('Bezeichnung'):
                     continue
                 if str(elem.get('text_size')) == '12' and elem.get('text_color') == '#000000':
                     waermebruecke = elem.get('Bezeichnung')
-                    zusatzinfo = '-'
+                    zusatzinfo_first: str = ''
+                    zusatzinfo_second: str = '-'
                     continue
+                if str(elem.get('text_size')) == '11':
+                    zusatzinfo_first: str = elem.get('Bezeichnung') + ' - '
+                    zusatzinfo_second: str = '-'
                 if str(elem.get('text_size')) == '10' and elem.get('text_color') == '#ff0000':
-                    zusatzinfo = elem.get('Bezeichnung')
+                    zusatzinfo_second = elem.get('Bezeichnung')
                     continue
 
                 new_elem = elem.copy()
                 new_elem['Waermebruecke'] = waermebruecke
-                new_elem['Zusatzinfo Waermebruecke'] = zusatzinfo
+                new_elem['Zusatzinfo Waermebruecke'] = zusatzinfo_first + zusatzinfo_second
                 data_extended.append(new_elem)
 
             self.data = self._clean_data(data_extended)

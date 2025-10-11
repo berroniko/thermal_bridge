@@ -33,6 +33,9 @@ def test_update_from_csv(fp_psi_data):
 
 
 def test_update_from_origin_csv(fp_psi_data):
+    """Test the import from a csv file exported from Google Sheets
+    The Sheet requires the columns: row_color	text_size	text_color
+    """
     filehandler = JsonFileHandler(file_path=fp_psi_data)
     psi = Psi(filehandler=filehandler)
     filepath_new_source = TEST_DATA_DIR / "test_origin.csv"
@@ -61,8 +64,13 @@ def test_update_from_origin_csv(fp_psi_data):
          'text_color'              : '#000000',
          'text_size'               : 10}]
 
+    # Check compound 'Zusatzinfo ..' from header of text_size 11 and the following headers (see issue #14)
     assert psi.get_entries(key="Psi-Wert", value=0.0269)[0][
                'Zusatzinfo Waermebruecke'] == "Sturz Dachgeschoss - ohne Rollladen"
+
+    # Check compound 'Zusatzinfo ..' from header of text_size 11 changes correctly
+    assert psi.get_entries(key="Psi-Wert", value=0.0072)[0][
+               'Zusatzinfo Waermebruecke'] == "Fußpunkt Fenstertür - Sturz EG ohne Rollladen an Fußpunkt Fenstertür mit Rolladen"
 
 
 @pytest.mark.parametrize('bezeichnung, expected',

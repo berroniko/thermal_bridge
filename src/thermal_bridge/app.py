@@ -8,8 +8,18 @@ from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 def streamlit_app(df):
     st.set_page_config(layout="wide")
-    st.title("Wärmebrückendaten")
+    col1, col2 = st.columns([3, 1])  # Adjust the ratio as needed
 
+    latest_date = max(
+        (d for d in df["Datum"] if pd.notna(d) and d not in [None, ""]),
+        default=None
+    )
+
+    with col1:
+        st.title("Wärmebrückendaten")
+
+    with col2:
+        st.write(f"Stand der Daten:   {latest_date} - 44er Wand")
 
     list_of_filters = {'Waermebruecke'           : 'Wärmebrücke',
                        'Zusatzinfo Waermebruecke': 'Zusatzinfo',
@@ -105,7 +115,6 @@ def streamlit_app(df):
         return {};
     }
     """)
-
 
     # GridOptions with custom row styling
     gb = GridOptionsBuilder.from_dataframe(final_filtered_df)

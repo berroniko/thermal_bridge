@@ -10,3 +10,4 @@ https://thermalbridge.streamlit.app
 4) Make sure column `text_size` contains only values 10, 11 and 12
 5) Download as .csv
 6) In `import_data.py` point `filepath_new_source` to the csv-file
+7) Get the key from streamlit before running the import

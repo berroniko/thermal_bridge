@@ -177,3 +177,5 @@ psi_data.json
 .data/*.csv
 data/*.csv
 /data/*.csv
+/data/*.log
+/dev_data_no_commit/*

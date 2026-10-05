@@ -15,6 +15,32 @@ class Psi(ListOfDictContainer):
     def __str__(self):
         return 'psi'
 
+    def update_from_excel(self, filepath, sheet_name='44er Wand') -> None:
+        """Import Excel rows, prompting in the terminal for invalid Psi values.
+
+        Corrections apply to the imported dataset; the workbook is not edited.
+        """
+        from src.thermal_bridge.excel_import import read_excel_rows
+
+        rows = read_excel_rows(filepath, sheet_name)
+        if not rows:
+            raise ValueError('No rows found in the selected worksheet')
+        for row in rows:
+            value = row.get('Psi-Wert')
+            if value is not None:
+                while True:
+                    try:
+                        corrected_value = float(value)
+                    except (TypeError, ValueError):
+                        value = input(
+                            f"Invalid Psi-Wert {value!r} for {row['Bezeichnung']!r}. "
+                            'Enter the corrected value (use a decimal point): '
+                        ).strip()
+                    else:
+                        row['Psi-Wert'] = corrected_value
+                        break
+        self.update_from_upload(rows)
+
     def update_from_upload(self, data: list[dict]) -> None:
         """update both the file and instance of the classe from a dataset.
 

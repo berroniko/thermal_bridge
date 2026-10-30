@@ -180,3 +180,6 @@ data/*.csv
 
 .vscode/
 .zshrc
+
+/data/*.log
+/dev_data_no_commit/*

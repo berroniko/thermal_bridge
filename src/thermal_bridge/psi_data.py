@@ -15,13 +15,40 @@ class Psi(ListOfDictContainer):
     def __str__(self):
         return 'psi'
 
+    def update_from_excel(self, filepath, sheet_name='44er Wand') -> None:
+        """Import Excel rows, prompting in the terminal for invalid Psi values.
+
+        Corrections apply to the imported dataset; the workbook is not edited.
+        """
+        from src.thermal_bridge.excel_import import read_excel_rows
+
+        rows = read_excel_rows(filepath, sheet_name)
+        if not rows:
+            raise ValueError('No rows found in the selected worksheet')
+        for row in rows:
+            value = row.get('Psi-Wert')
+            if value is not None:
+                while True:
+                    try:
+                        corrected_value = float(value)
+                    except (TypeError, ValueError):
+                        value = input(
+                            f"Invalid Psi-Wert {value!r} for {row['Bezeichnung']!r}. "
+                            'Enter the corrected value (use a decimal point): '
+                        ).strip()
+                    else:
+                        row['Psi-Wert'] = corrected_value
+                        break
+        self.update_from_upload(rows)
+
     def update_from_upload(self, data: list[dict]) -> None:
         """update both the file and instance of the classe from a dataset.
 
         If it is the original file format, the columns columns 'Waermebruecke' and 'Zusatzinfo Waermebruecke'
         will be generated based on the formatting in the original file
         'Waermebruecke' results from text_size == 12 and text_color==#000000
-        'Zusatzinfo Waermebruecke' results from text_size == 10 and text_color==#ff0000"""
+        'Zusatzinfo Waermebruecke' results from text_size == 10 and text_color==#ff0000
+        normal fields have also text_size == 10 but other text_colors"""
 
         unique_data = self._unique_keys(data=data)
         if 'Waermebruecke' in unique_data[0].keys():
@@ -31,21 +58,26 @@ class Psi(ListOfDictContainer):
             # otherwise it is the original format and the columns are created
             data_extended: list[dict] = []
             waermebruecke: str = '-'
-            zusatzinfo: str = '-'
+            zusatzinfo_first: str = ''
+            zusatzinfo_second: str = '-'
             for elem in unique_data:
                 if not elem.get('Bezeichnung'):
                     continue
                 if str(elem.get('text_size')) == '12' and elem.get('text_color') == '#000000':
                     waermebruecke = elem.get('Bezeichnung')
-                    zusatzinfo = '-'
+                    zusatzinfo_first: str = ''
+                    zusatzinfo_second: str = '-'
                     continue
+                if str(elem.get('text_size')) == '11':
+                    zusatzinfo_first: str = elem.get('Bezeichnung') + ' - '
+                    zusatzinfo_second: str = '-'
                 if str(elem.get('text_size')) == '10' and elem.get('text_color') == '#ff0000':
-                    zusatzinfo = elem.get('Bezeichnung')
+                    zusatzinfo_second = elem.get('Bezeichnung')
                     continue
 
                 new_elem = elem.copy()
                 new_elem['Waermebruecke'] = waermebruecke
-                new_elem['Zusatzinfo Waermebruecke'] = zusatzinfo
+                new_elem['Zusatzinfo Waermebruecke'] = zusatzinfo_first + zusatzinfo_second
                 data_extended.append(new_elem)
 
             self.data = self._clean_data(data_extended)
@@ -63,6 +95,7 @@ class Psi(ListOfDictContainer):
 
             del new_elem["BV"]
             del new_elem["Name"]
+            new_elem['Psi-Wert'] = float(elem.get('Psi-Wert'))
             for colum_name in elem.keys():
                 if colum_name.startswith('Unnamed'):
                     del new_elem[colum_name]

@@ -33,12 +33,15 @@ def test_update_from_csv(fp_psi_data):
 
 
 def test_update_from_origin_csv(fp_psi_data):
+    """Test the import from a csv file exported from Google Sheets
+    The Sheet requires the columns: row_color	text_size	text_color
+    """
     filehandler = JsonFileHandler(file_path=fp_psi_data)
     psi = Psi(filehandler=filehandler)
     filepath_new_source = TEST_DATA_DIR / "test_origin.csv"
     psi.update_from_file(filepath=filepath_new_source)
 
-    assert len(psi.data) == 39
+    assert len(psi.data) == 56
     assert psi.get_entries(key="Psi-Wert", value=0.0238) == [
         {'Bezeichnung'             : 'AW52,5-P-15PPW4-160mm035_17,5PPW2_BP18-19-60mm035US + '
                                      'Frostschürze_ohne SD_Pflasterung_Tür1,0',
@@ -60,6 +63,14 @@ def test_update_from_origin_csv(fp_psi_data):
          'staerke'                 : 'AW52,5',
          'text_color'              : '#000000',
          'text_size'               : 10}]
+
+    # Check compound 'Zusatzinfo ..' from header of text_size 11 and the following headers (see issue #14)
+    assert psi.get_entries(key="Psi-Wert", value=0.0269)[0][
+               'Zusatzinfo Waermebruecke'] == "Sturz Dachgeschoss - ohne Rollladen"
+
+    # Check compound 'Zusatzinfo ..' from header of text_size 11 changes correctly
+    assert psi.get_entries(key="Psi-Wert", value=0.0072)[0][
+               'Zusatzinfo Waermebruecke'] == "Fußpunkt Fenstertür - Sturz EG ohne Rollladen an Fußpunkt Fenstertür mit Rolladen"
 
 
 @pytest.mark.parametrize('bezeichnung, expected',

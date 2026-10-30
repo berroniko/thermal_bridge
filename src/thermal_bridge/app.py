@@ -8,7 +8,18 @@ from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 def streamlit_app(df):
     st.set_page_config(layout="wide")
-    st.title("Wärmebrückendaten")
+    col1, col2 = st.columns([3, 1])  # Adjust the ratio as needed
+
+    latest_date = max(
+        (d for d in df["Datum"] if pd.notna(d) and d not in [None, ""]),
+        default=None
+    )
+
+    with col1:
+        st.title("Wärmebrückendaten")
+
+    with col2:
+        st.write(f"Stand der Daten:   {latest_date} - 44er Wand")
 
     list_of_filters = {'Waermebruecke'           : 'Wärmebrücke',
                        'Zusatzinfo Waermebruecke': 'Zusatzinfo',
@@ -144,6 +155,14 @@ def streamlit_app(df):
         fit_columns_on_grid_load=True,
         allow_unsafe_jscode=True  # Allow JsCode injection
     )
+
+    # Get selected row and copy a value
+    selected = grid_response["selected_rows"]
+    try:
+        value_to_copy = selected['Bezeichnung'].item()
+        st.write(value_to_copy)
+    except TypeError:
+        st.write("")
 
 
 def authenticate():

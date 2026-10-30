@@ -177,3 +177,6 @@ psi_data.json
 .data/*.csv
 data/*.csv
 /data/*.csv
+
+.vscode/
+.zshrc

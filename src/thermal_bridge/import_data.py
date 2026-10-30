@@ -14,8 +14,9 @@ def main():
     filehandler = CryptoJsonFileHandler(file_path=filepath, crypter=crypter)
     psi = Psi(filehandler=filehandler)
 
-    filepath_new_source = DATA_DIR / "Stand Oktober 25 - 44er Wand.csv"
-    psi.update_from_file(filepath=filepath_new_source)
+    filepath_new_source = DATA_DIR / "dev_data_no_commit/Stand 10-2026.xlsx"
+    psi.update_from_excel(filepath_new_source, sheet_name="44er Wand")
+    # psi.update_from_file(filepath=filepath_new_source)
     print(f"{len(psi.data)} entries")
 
 def old_main():

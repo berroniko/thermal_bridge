@@ -93,20 +93,22 @@ class Psi(ListOfDictContainer):
             new_elem = {k: "-" if is_nan(v) else v for k, v in elem.items()}
             # new_elem["VHAG"] = 'X' if (elem.get('VHAG') in ['x', 'X']) else '-'
 
-            del new_elem["BV"]
-            del new_elem["Name"]
+            if "BV" in new_elem:
+                del new_elem["BV"]
+            if "Name" in new_elem:
+                del new_elem["Name"]
             new_elem['Psi-Wert'] = float(elem.get('Psi-Wert'))
             for colum_name in elem.keys():
                 if colum_name.startswith('Unnamed'):
                     del new_elem[colum_name]
 
-            new_elem = new_elem | self._parse_bezeichnung(elem.get("Bezeichnung", ""))
+            new_elem = new_elem | self._parse_bezeichnung(str(elem.get("Bezeichnung", "")))
             if True:  # handling of date formats
                 datum = elem.get('Datum')
                 if is_nan(datum):
                     new_elem['Datum'] = None
                 else:
-                    new_elem['Datum'] = parse_date(datum).strftime("%Y-%m-%d")
+                    new_elem['Datum'] = parse_date(str(datum)).strftime("%Y-%m-%d")
             cleaned.append(new_elem)
         return cleaned
 

@@ -183,3 +183,6 @@ data/*.csv
 
 /data/*.log
 /dev_data_no_commit/*
+
+# Streamlit agent skills (environment-specific symlinks)
+.agents/skills/developing-with-streamlit

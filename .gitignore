@@ -177,3 +177,8 @@ psi_data.json
 .data/*.csv
 data/*.csv
 /data/*.csv
+
+.zshrc
+
+# Streamlit agent skills (environment-specific symlinks)
+.agents/skills/developing-with-streamlit

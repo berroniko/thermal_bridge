@@ -19,14 +19,5 @@ def main():
     # psi.update_from_file(filepath=filepath_new_source)
     print(f"{len(psi.data)} entries")
 
-def old_main():
-    filepath = DATA_DIR / "psi_data_from_scratch.json"
-    filehandler = JsonFileHandler(file_path=filepath)
-    psi = Psi(filehandler=filehandler)
-
-    filepath_new_source = DATA_DIR / "Stand 06Juni25 adapted - 44er Wand.csv"
-    psi.update_from_file(filepath=filepath_new_source)
-    print(f"{len(psi.data)} entries")
-
 if __name__ == '__main__':
     main()

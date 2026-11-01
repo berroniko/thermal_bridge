@@ -1,7 +1,9 @@
 from berroutils.crypter import Crypter
 from berroutils.plugins.file_handler import CryptoJsonFileHandler, JsonFileHandler
+from pathlib import Path
+import json
 
-from src import DATA_DIR, DEV_DATA_DIR
+from src import DATA_DIR, DEV_DATA_DIR, SRC_ROOT
 from src.thermal_bridge.psi_data import Psi
 
 
@@ -14,10 +16,10 @@ def main():
     # alternatively get the key from streamlit.secrets
     # key = 'key_from_streamlit_secrets'
 
-    filepath = DATA_DIR / "psi_data.enc"
+    filepath = DATA_DIR / "psi_data_oct25.enc"
     crypter = Crypter(key=key)
     filehandler = CryptoJsonFileHandler(file_path=filepath, crypter=crypter)
-    psi = Psi(filehandler=filehandler, crypter=crypter)
+    psi = Psi(filehandler=filehandler)
 
     filepath_new_source = DEV_DATA_DIR / "Stand Oktober 25 - 44er Wand.csv"
     psi.update_from_file(filepath=filepath_new_source)
@@ -41,4 +43,5 @@ def dev_main():
     print(f"{len(psi.data)} entries")
 
 if __name__ == '__main__':
-    dev_main()
+    main()
+

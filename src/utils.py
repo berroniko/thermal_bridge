@@ -4,19 +4,19 @@ from datetime import datetime
 from pathlib import Path
 
 import ollama
-from openai import OpenAI
+from openai import OpenAI, AuthenticationError, APIError
 from prompt_toolkit import prompt
 from pydantic import BaseModel
 
 from src import SRC_ROOT
 
-working_locally = False
 
-if working_locally:
+def set_openai_key():
     with open(SRC_ROOT.parent.parent / Path("credentials.json")) as f:
         credentials = json.load(f)
 
-    os.environ['echo'] = credentials["openai_api_testing"]
+    os.environ['OPENAI_API_KEY'] = credentials["OPENAI_API_KEY"]
+    check_openai_key()
 
 
 def is_nan(value) -> bool:
@@ -55,7 +55,8 @@ def parse_date(date_str: str) -> datetime:
 
     # user_input = input_with_default(message="please correct this to the format dd.mm.yyyy:",
     #                                 default=date_str)
-    user_input = input(f"please enter this date '{date_str}' in format dd.mm.yyyy:")
+    user_input = input(
+        f"please enter this date '{date_str}' in format dd.mm.yyyy:")
     return parse_date(user_input)
 
 
@@ -84,7 +85,8 @@ def parse_date_ollama(date_string: str) -> dict:
     Input: "{date_string}"
     """
 
-    response = client.generate(model=model, prompt=prompt, format="json", stream=False)
+    response = client.generate(
+        model=model, prompt=prompt, format="json", stream=False)
 
     return json.loads(response.response)
 
@@ -149,7 +151,31 @@ def parse_structured_date_chatpgpt(date_string: str) -> dict | None:
     return response.output_parsed.model_dump()
 
 
+def check_openai_key():
+    if not os.environ.get("OPENAI_API_KEY", "").strip():
+        raise SystemExit("OPENAI_API_KEY is not set.")
+
+    try:
+        with OpenAI(timeout=10.0, max_retries=0) as client:
+            client.models.list()
+    except AuthenticationError:
+        raise SystemExit(
+            "OPENAI_API_KEY was rejected. Check or replace it.") from None
+    except APIError as exc:
+        raise SystemExit(
+            f"Could not verify API access ({type(exc).__name__})."
+        ) from None
+
+    print("OpenAI API key accepted.")
+
+
 if __name__ == '__main__':
+    working_locally = True
+
+    if working_locally:
+        set_openai_key()
+
     # result = input_with_default("please correct: ", default="hällo")
-    result = parse_date("09/24.2018")
+
+    result = parse_structured_date_chatpgpt("09/24.2018")
     print(result)

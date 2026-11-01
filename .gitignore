@@ -177,6 +177,7 @@ psi_data.json
 .data/*.csv
 data/*.csv
 /data/*.csv
+.dev_data_no_commit/
 
 .zshrc
 

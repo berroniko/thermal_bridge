@@ -6,8 +6,13 @@ from src.thermal_bridge.psi_data import Psi
 
 
 def main():
-    # get from streamlit.secrets
-    key = 'missing'
+
+    with open(SRC_ROOT.parent.parent / Path("credentials.json")) as f:
+        credentials = json.load(f)
+    key = credentials.get("thermalbridge_encryption_key")
+
+    # alternatively get the key from streamlit.secrets
+    # key = 'key_from_streamlit_secrets'
 
     filepath = DATA_DIR / "psi_data.enc"
     crypter = Crypter(key=key)

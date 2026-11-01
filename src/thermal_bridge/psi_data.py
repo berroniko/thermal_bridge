@@ -97,6 +97,9 @@ class Psi(ListOfDictContainer):
                 del new_elem["BV"]
             if "Name" in new_elem:
                 del new_elem["Name"]
+            # TODO: also delete Projekt-nummer,	Service-nummer,	Bauvorhaben Nr.,	Projekt,	Name BV,...
+            # or rather, only keep the columns in self.required_keys and self.alternative_keys.values(), which might need to be extended
+            
             new_elem['Psi-Wert'] = float(elem.get('Psi-Wert'))
             for colum_name in elem.keys():
                 if colum_name.startswith('Unnamed'):

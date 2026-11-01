@@ -3,8 +3,7 @@ import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
 
 
-#  from one level above root:
-#  streamlit run /Users/niko/Python/PycharmProjects/thermal_bridge/__main__.py
+# uv run streamlit run src/thermal_bridge/app.py 
 
 def streamlit_app(df):
     st.set_page_config(layout="wide")

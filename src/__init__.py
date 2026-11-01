@@ -4,6 +4,7 @@ import tomllib
 SRC_ROOT = Path(__file__).parent
 
 DATA_DIR = SRC_ROOT.parent / "data"
+DEV_DATA_DIR = SRC_ROOT.parent / "dev_data_no_commit"
 TEST_DATA_DIR = SRC_ROOT.parent / "test/test_data"
 
 with open(SRC_ROOT.parent / "pyproject.toml", "rb") as f:

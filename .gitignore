@@ -177,9 +177,13 @@ psi_data.json
 .data/*.csv
 data/*.csv
 /data/*.csv
-.dev_data_no_commit/
 
+.vscode/
 .zshrc
+
+/data/*.log
+dev_data_no_commit/
+
 
 # Streamlit agent skills (environment-specific symlinks)
 .agents/skills/developing-with-streamlit

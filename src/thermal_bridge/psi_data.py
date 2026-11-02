@@ -2,18 +2,45 @@ import re
 
 from berroutils.container.list_of_dict_container import ListOfDictContainer
 
-from src.utils import is_nan, parse_date
+from src.utils import is_nan, parse_date, set_openai_key
 
 
 class Psi(ListOfDictContainer):
-    required_keys: set[str] = {'Waermebruecke', 'Bezeichnung', 'Psi-Wert', 'Datum', 'row_color'}
-    alternative_keys: dict[str] = {'Wärmebrücke'                     : 'Waermebruecke',
+    required_keys: set[str] = {'Waermebruecke',
+                               'Bezeichnung', 'Psi-Wert', 'Datum', 'row_color'}
+    alternative_keys: dict[str] = {'Wärmebrücke': 'Waermebruecke',
                                    'Zusatzinfo W\u00e4rmebr\u00fccke': 'Zusatzinfo Waermebruecke', }
 
     # format: alternative_keys = {"alt_key": "unique_key"}
 
     def __str__(self):
         return 'psi'
+
+    def update_from_excel(self, filepath, sheet_name='44er Wand') -> None:
+        """Import Excel rows, prompting in the terminal for invalid Psi values.
+
+        Corrections apply to the imported dataset; the workbook is not edited.
+        """
+        from src.thermal_bridge.excel_import import read_excel_rows
+
+        rows = read_excel_rows(filepath, sheet_name)
+        if not rows:
+            raise ValueError('No rows found in the selected worksheet')
+        for row in rows:
+            value = row.get('Psi-Wert')
+            if value is not None:
+                while True:
+                    try:
+                        corrected_value = float(value)
+                    except (TypeError, ValueError):
+                        value = input(
+                            f"Invalid Psi-Wert {value!r} for {row['Bezeichnung']!r}. "
+                            'Enter the corrected value (use a decimal point): '
+                        ).strip()
+                    else:
+                        row['Psi-Wert'] = corrected_value
+                        break
+        self.update_from_upload(rows)
 
     def update_from_upload(self, data: list[dict]) -> None:
         """update both the file and instance of the classe from a dataset.
@@ -51,7 +78,8 @@ class Psi(ListOfDictContainer):
 
                 new_elem = elem.copy()
                 new_elem['Waermebruecke'] = waermebruecke
-                new_elem['Zusatzinfo Waermebruecke'] = zusatzinfo_first + zusatzinfo_second
+                new_elem['Zusatzinfo Waermebruecke'] = zusatzinfo_first + \
+                    zusatzinfo_second
                 data_extended.append(new_elem)
 
             self.data = self._clean_data(data_extended)
@@ -59,39 +87,43 @@ class Psi(ListOfDictContainer):
         self.filehandler.save(data=self.data)
 
     def _clean_data(self, data):
+        set_openai_key()
         cleaned = []
         for elem in data:
             if is_nan(elem.get('Bezeichnung')) or is_nan(elem.get('Psi-Wert')):
                 continue
+            new_elem = {}
 
-            new_elem = {k: "-" if is_nan(v) else v for k, v in elem.items()}
-            # new_elem["VHAG"] = 'X' if (elem.get('VHAG') in ['x', 'X']) else '-'
+            for article in ['Bezeichnung', 'Datum', 'row_color', 'Nr.', 'text_size', 'text_color', 'Waermebruecke', 'Zusatzinfo Waermebruecke']:
+                new_elem[article] = "-" if is_nan(
+                    elem.get(article)) else str(elem.get(article))
 
-            del new_elem["BV"]
-            del new_elem["Name"]
+            for article in ['mit Referenzbauteil', 'ebz', 'W&P', 'VHAG']:
+                new_elem[article] = 'X' if (
+                    elem.get(article) in ['x', 'X']) else '-'
+
             new_elem['Psi-Wert'] = float(elem.get('Psi-Wert'))
-            for colum_name in elem.keys():
-                if colum_name.startswith('Unnamed'):
-                    del new_elem[colum_name]
 
-            new_elem = new_elem | self._parse_bezeichnung(elem.get("Bezeichnung", ""))
+            new_elem = new_elem | self._parse_bezeichnung(
+                str(elem.get("Bezeichnung", "")))
             if True:  # handling of date formats
                 datum = elem.get('Datum')
                 if is_nan(datum):
                     new_elem['Datum'] = None
                 else:
-                    new_elem['Datum'] = parse_date(datum).strftime("%Y-%m-%d")
+                    new_elem['Datum'] = parse_date(
+                        str(datum)).strftime("%Y-%m-%d")
             cleaned.append(new_elem)
         return cleaned
 
     @staticmethod
     def _parse_bezeichnung(bezeichnung: str) -> dict:
         result = {
-            'staerke' : '-',
+            'staerke': '-',
             'material': '-',
-            'PPW'     : '-',
-            'dicke'   : None,
-            'WLG'     : None
+            'PPW': '-',
+            'dicke': None,
+            'WLG': None
         }
 
         # Match staerke (e.g., AW44, AWEG44)

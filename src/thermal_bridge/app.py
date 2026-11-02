@@ -1,10 +1,9 @@
 import pandas as pd
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder, JsCode, GridUpdateMode
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 
-#  from one level above root:
-#  streamlit run /Users/niko/Python/PycharmProjects/thermal_bridge/__main__.py
+# uv run streamlit run src/thermal_bridge/app.py 
 
 def streamlit_app(df):
     st.set_page_config(layout="wide")
@@ -150,7 +149,7 @@ def streamlit_app(df):
     grid_response = AgGrid(
         final_filtered_df,
         gridOptions=grid_options,
-        update_mode=GridUpdateMode.SELECTION_CHANGED,
+        update_on=["selectionChanged"],
         enableBrowserClipboard=True,
         fit_columns_on_grid_load=True,
         allow_unsafe_jscode=True  # Allow JsCode injection

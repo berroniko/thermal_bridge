@@ -16,14 +16,15 @@ def main():
     # alternatively get the key from streamlit.secrets
     # key = 'key_from_streamlit_secrets'
 
-    filepath = DATA_DIR / "psi_data_oct25.enc"
+    filepath = DATA_DIR / "psi_data.enc"
     crypter = Crypter(key=key)
     filehandler = CryptoJsonFileHandler(file_path=filepath, crypter=crypter)
     psi = Psi(filehandler=filehandler)
 
-    filepath_new_source = DEV_DATA_DIR / "Stand Oktober 25 - 44er Wand.csv"
-    psi.update_from_file(filepath=filepath_new_source)
+    filepath_new_source = DEV_DATA_DIR / "Stand 10-2026.xlsx"
+    psi.update_from_excel(filepath_new_source, sheet_name="44er Wand")
     print(f"{len(psi.data)} entries")
+
 
 def dev_main():
     """
@@ -34,14 +35,14 @@ def dev_main():
 
     # export OPENAI_API_KEY="api key here"
 
-    filepath = DEV_DATA_DIR / "psi_data.json"
+    filepath = DEV_DATA_DIR / "psi_data_oct26.json"
     filehandler = JsonFileHandler(file_path=filepath)
     psi = Psi(filehandler=filehandler)
 
-    filepath_new_source = DEV_DATA_DIR / "Stand Oktober 25 - 44er Wand.csv"
-    psi.update_from_file(filepath=filepath_new_source)
+    filepath_new_source = DEV_DATA_DIR / "Stand 10-2026.xlsx"
+    psi.update_from_excel(filepath=filepath_new_source, sheet_name="44er Wand")
     print(f"{len(psi.data)} entries")
+
 
 if __name__ == '__main__':
     main()
-

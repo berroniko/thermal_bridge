@@ -19,9 +19,9 @@ def main():
     filepath = DATA_DIR / "psi_data.enc"
     crypter = Crypter(key=key)
     filehandler = CryptoJsonFileHandler(file_path=filepath, crypter=crypter)
-    psi = Psi(filehandler=filehandler, crypter=crypter)
+    psi = Psi(filehandler=filehandler)
 
-    filepath_new_source = DEV_DATA_DIR / "Stand 10-2026.xlsx"
+    filepath_new_source = DEV_DATA_DIR / "Stand 10-2026 Sturz reformatted.xlsx"
     psi.update_from_excel(filepath_new_source, sheet_name="44er Wand")
     print(f"{len(psi.data)} entries")
 
@@ -35,14 +35,14 @@ def dev_main():
 
     # export OPENAI_API_KEY="api key here"
 
-    filepath = DEV_DATA_DIR / "psi_data_oct26.json"
+    filepath = DEV_DATA_DIR / "psi_data_oct26_reformatted.json"
     filehandler = JsonFileHandler(file_path=filepath)
     psi = Psi(filehandler=filehandler)
 
-    filepath_new_source = DEV_DATA_DIR / "Stand 10-2026.xlsx"
+    filepath_new_source = DEV_DATA_DIR / "Stand 10-2026 Sturz reformatted.xlsx"
     psi.update_from_excel(filepath=filepath_new_source, sheet_name="44er Wand")
     print(f"{len(psi.data)} entries")
 
 
 if __name__ == '__main__':
-    dev_main()
+    main()
